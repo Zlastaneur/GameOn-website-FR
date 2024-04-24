@@ -9,13 +9,17 @@ function handleForm(){
         let firstname = document.getElementById("first").value
         let lastname = document.getElementById("last").value
         let email = document.getElementById("email").value
+        let birthdate = document.getElementById("birthdate").value
         
         firstnameValidation(firstname)
         lastnameValidation(lastname)
         emailValidation(email)
+        birthdateValidation(birthdate)
 
-        console.log(firstname, lastname, email)
+        console.log(firstname, lastname, email, birthdate)
 }
+
+
 
 function firstnameValidation(firstname){
     if (firstname.length < 2) {
@@ -33,6 +37,12 @@ function emailValidation(email){
     let emailRegExp = new RegExp("[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+")
     if (!emailRegExp.test(email)){
         throw new Error("Adresse e-mail invalide")
+    }
+}
+
+function birthdateValidation(birthdate){
+    if (birthdate === "") {
+        throw new Error("Date de naissance invalide")
     }
 }
 
