@@ -7,15 +7,23 @@ form.addEventListener("submit", (e) => {
 }) 
 
 // Listening to the tournament radio choice
- 
-let tournamentList = document.querySelectorAll("form input[type=radio]")
-for (let i = 0; i < tournamentList.length; i++) {
-    tournamentList[i].addEventListener("change", () => {
-        let choosenTournament = tournamentList[i].value
-    })
+function tournamentChoice() {
+    let tournamentList = document.querySelectorAll("form input[type=radio]")
+    let choosenTournament = ""
+    for (let i = 0; i < tournamentList.length; i++) {
+        if(tournamentList[i].checked){
+            choosenTournament = tournamentList[i].value
+        } 
+    }
+    if (choosenTournament){
+        return choosenTournament
+    } else {
+        throw new Error("Veuillez choisir un tournoi")
+    }
+    
 }
 
-function handleForm(choosenTournament){
+function handleForm(){
     //Getting all the inputs
     let firstname = document.getElementById("first").value
     let lastname = document.getElementById("last").value
@@ -24,17 +32,18 @@ function handleForm(choosenTournament){
     let tournamentQuantity = document.getElementById("quantity").value
     let newsletter = document.getElementById("checkbox2").checked
 
-
+    
+    
     firstnameValidation(firstname)
     lastnameValidation(lastname)
     emailValidation(email)
     birthdateValidation(birthdate)
-    tournamentQuantityValidation(tournamentQuantity)
-    tournamentChoice(choosenTournament)
-    tournamentChoiceValidation(choosenTournament)
+    //tournamentQuantityValidation(tournamentQuantity)
     termOfUse()
 
-    console.log(firstname, lastname, email, birthdate, tournamentQuantity, choosenTournament, newsletter)
+    let city = tournamentChoice()
+
+    console.log(firstname, lastname, email, birthdate, tournamentQuantity, city, newsletter)
 
 }
 
@@ -62,30 +71,13 @@ function birthdateValidation(birthdate){
         throw new Error("Date de naissance invalide")
     }
 }
-
+/*
 function tournamentQuantityValidation(tournamentQuantity){
     
-    if (isNaN(tournamentQuantity)){
+    if (){
         throw new Error ("Quantité invalide")
     }
-}
-
-/*
-function tournamentChoice(choosenTournament){
-    let tournamentList = document.querySelectorAll("form input[type=radio]")
-    console.log(tournamentList)
-    for (let i = 0; i < tournamentList.length; i++) {
-        choosenTournament = tournamentList[i].value
-        console.log(choosenTournament)
-    }
 }*/
-
-function tournamentChoiceValidation(choosenTournament){
-    if (choosenTournament === ""){
-        console.log(choosenTournament)
-        throw new Error ("Veuillez choisir un tournoi")
-    }
-}
 
 function termOfUse(){
     let checkbox = document.getElementById("checkbox1").checked
