@@ -5,7 +5,8 @@ form.addEventListener("submit", (e) => {
 
     handleForm()
 }) 
-
+let first = document.getElementById("first")
+console.log(first)
 // Listening to the tournament radio choice
 function tournamentChoice() {
     let tournamentList = document.querySelectorAll("form input[type=radio]")
@@ -25,36 +26,41 @@ function tournamentChoice() {
 
 function handleForm(){
     //Getting all the inputs
-    let firstname = document.getElementById("first").value
-    let lastname = document.getElementById("last").value
+    let firstName = document.getElementById("first").value
+    let lastName = document.getElementById("last").value
     let email = document.getElementById("email").value
     let birthdate = document.getElementById("birthdate").value
     let tournamentQuantity = document.getElementById("quantity").value
     let newsletter = document.getElementById("checkbox2").checked
-
+    let termOfUse = document.getElementById("checkbox1").checked
     
+    //Inputs verification
+    try{
+        firstNameValidation(firstName)
+        lastNameValidation(lastName)
+        emailValidation(email)
+        birthdateValidation(birthdate)
+        tournamentQuantityValidation(tournamentQuantity)
+        termOfUseValidation(termOfUse)
+
+        let city = tournamentChoice()
+        showErrorMessage("")
+
+        console.log(firstName, lastName, email, birthdate, tournamentQuantity, city, termOfUse, newsletter)
+    } catch(error){ 
+        showErrorMessage(error.message)
+    }
     
-    firstnameValidation(firstname)
-    lastnameValidation(lastname)
-    emailValidation(email)
-    birthdateValidation(birthdate)
-    //tournamentQuantityValidation(tournamentQuantity)
-    termOfUse()
-
-    let city = tournamentChoice()
-
-    console.log(firstname, lastname, email, birthdate, tournamentQuantity, city, newsletter)
-
 }
 
-function firstnameValidation(firstname){
-    if (firstname.length < 2) {
+function firstNameValidation(firstName){
+    if (firstName.length < 2) {
         throw new Error("Le prénom est trop court. ")
     }
 }
 
-function lastnameValidation(lastname){
-    if (lastname.length < 2) {
+function lastNameValidation(lastName){
+    if (lastName.length < 2) {
         throw new Error("Le nom est trop court. ")
     }
 }
@@ -71,18 +77,53 @@ function birthdateValidation(birthdate){
         throw new Error("Date de naissance invalide")
     }
 }
-/*
 function tournamentQuantityValidation(tournamentQuantity){
     
-    if (){
+    if (isNaN(tournamentQuantity) || tournamentQuantity < 0 || tournamentQuantity > 99){
         throw new Error ("Quantité invalide")
     }
-}*/
+}
 
-function termOfUse(){
-    let checkbox = document.getElementById("checkbox1").checked
+function termOfUseValidation(termOfUse){
 
-    if (checkbox === false){
+    if (termOfUse === false){
         throw new Error ("Veuillez accepter les conditions d'utilisation")
     }
 }
+
+function showErrorMessage(message){
+
+    //let errorMessageSpan = document.getElementById("messageError")
+    let formData = document.querySelector(".formData")
+
+    if (!formData.hasAttribute("data-error-visible")){
+
+        formData.setAttribute("data-error-visible", "true")       
+        formData.setAttribute("data-error", message) 
+        console.log(formData)
+
+
+        
+        //errorMessageSpan = document.createElement("span")
+        //errorMessageSpan.id="messageError"
+        
+        //formData.append(errorMessageSpan)
+    }
+    //errorMessageSpan.innerText = message
+}
+/*
+function showErrorMessage(message){
+
+    let formData = document.querySelectorAll(".formData")
+
+    for (let i = 0; i < formData.length; i++) {
+        if (!formData.hasAttribute("data-error-visible")){
+
+            formData.setAttribute("data-error-visible", "true")       
+            formData.setAttribute("data-error", message) 
+            console.log(formData)
+        }
+    }
+    
+
+}*/
