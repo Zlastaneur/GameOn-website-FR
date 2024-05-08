@@ -2,7 +2,7 @@
 const formData = document.querySelectorAll(".formData");
 const modalBody = document.querySelector(".modal-body")
 const form = document.querySelector("form")
-let submitBtn = document.querySelector(".btn-submit")
+const submitBtn = document.querySelector(".btn-submit")
 let firstName = document.getElementById("first")
 let lastName = document.getElementById("last")
 let email = document.getElementById("email")
@@ -13,17 +13,13 @@ let termOfUse = document.getElementById("checkbox1")
 let newsletter = document.getElementById("checkbox2").checked
 
 // Checking if submit btn is clicked
-
 submitBtn.addEventListener("click", validate)
-console.log(form)
 
-//Derniere verif
+// Validate or not the form
 function validate(e){
     e.preventDefault()
-
+    
     if (firstNameValidation() && lastNameValidation() && emailValidation() && birthdateValidation() && tournamentQuantityValidation() && termOfUseValidation() && cityChoice()){
-        console.log(firstName.value, lastName.value, email.value, birthdate.value, tournamentQuantity.value, /*checkedCity,*/ termOfUse.checked, newsletter.checked)
-
         form.style.display = "none"
         closeBtn.classList.add("end")
 
@@ -38,6 +34,7 @@ function validate(e){
         `)
 
         let endBtn = document.querySelectorAll(".end")
+
         endBtn.forEach((btn)=> btn.addEventListener("click", (closeModal)))
         endBtn.forEach((btn)=> btn.addEventListener("click", (resetForm)))
 
@@ -52,13 +49,13 @@ function validate(e){
     }
 }
 
+/******* ↓↓ Listen and check the inputs ↓↓ *******/
 formData[0].addEventListener("input", firstNameValidation)
 function firstNameValidation(){
     if (firstName.value.length >= 2) {
         cleanError(firstName)
         return true
     } else {
-        console.log(firstName.id)
         showError(firstName)
         return false
     }
@@ -70,7 +67,6 @@ function lastNameValidation(){
         cleanError(lastName)
         return true
     } else {
-        console.log(lastName.id)
         showError(lastName)
         return false
     }
@@ -84,7 +80,6 @@ function emailValidation(){
         cleanError(email)
         return true
     } else {
-        console.log(email.id)
         showError(email)
         return false
     }
@@ -93,7 +88,6 @@ function emailValidation(){
 formData[3].addEventListener("input", birthdateValidation)
 function birthdateValidation(){
     if (birthdate.value != "") {
-        console.log(birthdate.id, birthdate.value)
         cleanError(birthdate)
         return true
     } else {
@@ -104,12 +98,10 @@ function birthdateValidation(){
 
 formData[4].addEventListener("input", tournamentQuantityValidation)
 function tournamentQuantityValidation(){
-    console.log(tournamentQuantity.value)
     if (tournamentQuantity.value != "" && tournamentQuantity.value >= 0 && tournamentQuantity.value < 99){
         cleanError(tournamentQuantity)
         return true
     } else {
-        console.log(tournamentQuantity.id)
         showError(tournamentQuantity)
         return false
     }
@@ -118,12 +110,10 @@ function tournamentQuantityValidation(){
 formData[5].addEventListener("input", cityChoice)
 function cityChoice() {
     let checkedCity = document.querySelector("input[name='location']:checked")
-console.log(checkedCity)
     if (checkedCity){
         cleanError(citySelection)
         return true
     } else {
-        console.log(citySelection.id)
         showError(citySelection)
         return false
     }
@@ -140,7 +130,9 @@ function termOfUseValidation(){
         return false
     }
 }
+/*********** ↑↑ Listen and check the inputs ↑↑ ***********/
 
+// Get position of the error and displays it
 function showError(element){
     let parentFormData = element.parentElement
     let errorMessage = ""
@@ -163,20 +155,20 @@ function showError(element){
         }
         default : { console.log("Erreur dans l'instruction switch")
         }
-        
     }
-
     parentFormData.setAttribute("data-error-visible", "true")
     parentFormData.setAttribute("data-error", errorMessage) 
 }
 
+// Clean error when there is no more
 function cleanError(e){
     let parentFormData = e.parentElement
-    
+
     parentFormData.setAttribute("data-error-visible", "false")
     parentFormData.setAttribute("data-error", "") 
 }
 
+// Reset form at the end
 function resetForm(){
     let thanksModal = document.querySelector(".thanksModal")
 
