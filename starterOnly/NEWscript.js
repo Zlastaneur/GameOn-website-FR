@@ -1,5 +1,8 @@
 //Getting all the inputs
-let form = document.querySelector("form")
+const formData = document.querySelectorAll(".formData");
+const modalBody = document.querySelector(".modal-body")
+const form = document.querySelector("form")
+let submitBtn = document.querySelector(".btn-submit")
 let firstName = document.getElementById("first")
 let lastName = document.getElementById("last")
 let email = document.getElementById("email")
@@ -11,17 +14,33 @@ let newsletter = document.getElementById("checkbox2").checked
 
 // Checking if submit btn is clicked
 
-form.addEventListener("submit", finalValidation)
-
+submitBtn.addEventListener("click", validate)
+console.log(form)
 
 //Derniere verif
-function finalValidation(event){
-    event.preventDefault()
+function validate(e){
+    e.preventDefault()
 
     if (firstNameValidation() && lastNameValidation() && emailValidation() && birthdateValidation() && tournamentQuantityValidation() && termOfUseValidation() && cityChoice()){
+        console.log(firstName.value, lastName.value, email.value, birthdate.value, tournamentQuantity.value, /*checkedCity,*/ termOfUse.checked, newsletter.checked)
 
-        console.log(firstName, lastName, email, birthdate, tournamentQuantity, checkedCity, termOfUse, newsletter)
-    
+        form.style.display = "none"
+        closeBtn.classList.add("end")
+
+        modalBody.insertAdjacentHTML("afterbegin",
+        `
+            <div class="thanksModal">
+                <div class="message">
+                    Merci pour<br>votre inscription ! 
+                </div>
+                <input class="button end" type="button" value="Fermer"/>
+            </div>
+        `)
+
+        let endBtn = document.querySelectorAll(".end")
+        endBtn.forEach((btn)=> btn.addEventListener("click", (closeModal)))
+        endBtn.forEach((btn)=> btn.addEventListener("click", (resetForm)))
+
     } else {
         firstNameValidation(),
         lastNameValidation(),
@@ -60,6 +79,7 @@ function lastNameValidation(){
 formData[2].addEventListener("input", emailValidation)
 function emailValidation(){
     let emailRegExp = new RegExp("[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+")
+
     if (emailRegExp.test(email.value)){
         cleanError(email)
         return true
@@ -73,10 +93,10 @@ function emailValidation(){
 formData[3].addEventListener("input", birthdateValidation)
 function birthdateValidation(){
     if (birthdate.value != "") {
+        console.log(birthdate.id, birthdate.value)
         cleanError(birthdate)
         return true
     } else {
-        console.log(birthdate.id)
         showError(birthdate)
         return false
     }
@@ -84,8 +104,8 @@ function birthdateValidation(){
 
 formData[4].addEventListener("input", tournamentQuantityValidation)
 function tournamentQuantityValidation(){
-    
-    if (tournamentQuantity.value > 0 || tournamentQuantity.value < 99){
+    console.log(tournamentQuantity.value)
+    if (tournamentQuantity.value != "" && tournamentQuantity.value >= 0 && tournamentQuantity.value < 99){
         cleanError(tournamentQuantity)
         return true
     } else {
@@ -124,7 +144,6 @@ function termOfUseValidation(){
 function showError(element){
     let parentFormData = element.parentElement
     let errorMessage = ""
-    //console.log(element.id)
 
     switch (element.id) {
         case "first": { errorMessage = "Le prénom doit contenir au moins 2 caractères"
@@ -153,6 +172,16 @@ function showError(element){
 
 function cleanError(e){
     let parentFormData = e.parentElement
+    
     parentFormData.setAttribute("data-error-visible", "false")
     parentFormData.setAttribute("data-error", "") 
+}
+
+function resetForm(){
+    let thanksModal = document.querySelector(".thanksModal")
+
+    closeBtn.classList.remove("end")
+    thanksModal.remove()
+    form.reset()
+    form.style.display = "block"
 }
