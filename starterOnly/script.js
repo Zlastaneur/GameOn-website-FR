@@ -1,129 +1,179 @@
-// Checking if submit btn is clicked then starting the form
-let form = document.querySelector("form")
-form.addEventListener("submit", (e) => {
+//Getting all the inputs
+const formData = document.querySelectorAll(".formData");
+const modalBody = document.querySelector(".modal-body")
+const form = document.querySelector("form")
+const submitBtn = document.querySelector(".btn-submit")
+let firstName = document.getElementById("first")
+let lastName = document.getElementById("last")
+let email = document.getElementById("email")
+let birthdate = document.getElementById("birthdate")
+let tournamentQuantity = document.getElementById("quantity")
+let citySelection = document.getElementById("location1")
+let termOfUse = document.getElementById("checkbox1")
+let newsletter = document.getElementById("checkbox2").checked
+
+// Checking if submit btn is clicked
+submitBtn.addEventListener("click", validate)
+
+// Validate or not the form
+function validate(e){
     e.preventDefault()
+    
+    if (firstNameValidation() && lastNameValidation() && emailValidation() && birthdateValidation() && tournamentQuantityValidation() && termOfUseValidation() && cityChoice()){
+        form.style.display = "none"
+        closeBtn.classList.add("end")
 
-    handleForm()
-}) 
-let first = document.getElementById("first")
-console.log(first)
-// Listening to the tournament radio choice
-function tournamentChoice() {
-    let tournamentList = document.querySelectorAll("form input[type=radio]")
-    let choosenTournament = ""
-    for (let i = 0; i < tournamentList.length; i++) {
-        if(tournamentList[i].checked){
-            choosenTournament = tournamentList[i].value
-        } 
-    }
-    if (choosenTournament){
-        return choosenTournament
+        modalBody.insertAdjacentHTML("afterbegin",
+        `
+            <div class="thanksModal">
+                <div class="message">
+                    Merci pour<br>votre inscription ! 
+                </div>
+                <input class="button end" type="button" value="Fermer"/>
+            </div>
+        `)
+
+        let endBtn = document.querySelectorAll(".end")
+
+        endBtn.forEach((btn)=> btn.addEventListener("click", (closeModal)))
+        endBtn.forEach((btn)=> btn.addEventListener("click", (resetForm)))
+
     } else {
-        throw new Error("Veuillez choisir un tournoi")
-    }
-    
-}
-
-function handleForm(){
-    //Getting all the inputs
-    let firstName = document.getElementById("first").value
-    let lastName = document.getElementById("last").value
-    let email = document.getElementById("email").value
-    let birthdate = document.getElementById("birthdate").value
-    let tournamentQuantity = document.getElementById("quantity").value
-    let newsletter = document.getElementById("checkbox2").checked
-    let termOfUse = document.getElementById("checkbox1").checked
-    
-    //Inputs verification
-    try{
-        firstNameValidation(firstName)
-        lastNameValidation(lastName)
-        emailValidation(email)
-        birthdateValidation(birthdate)
-        tournamentQuantityValidation(tournamentQuantity)
-        termOfUseValidation(termOfUse)
-
-        let city = tournamentChoice()
-        showErrorMessage("")
-
-        console.log(firstName, lastName, email, birthdate, tournamentQuantity, city, termOfUse, newsletter)
-    } catch(error){ 
-        showErrorMessage(error.message)
-    }
-    
-}
-
-function firstNameValidation(firstName){
-    if (firstName.length < 2) {
-        throw new Error("Le prénom est trop court. ")
+        firstNameValidation(),
+        lastNameValidation(),
+        emailValidation(),
+        birthdateValidation(),
+        tournamentQuantityValidation(),
+        termOfUseValidation(),
+        cityChoice()
     }
 }
 
-function lastNameValidation(lastName){
-    if (lastName.length < 2) {
-        throw new Error("Le nom est trop court. ")
+/******* ↓↓ Listen and check the inputs ↓↓ *******/
+formData[0].addEventListener("input", firstNameValidation)
+function firstNameValidation(){
+    if (firstName.value.length >= 2) {
+        cleanError(firstName)
+        return true
+    } else {
+        showError(firstName)
+        return false
     }
 }
 
-function emailValidation(email){
+formData[1].addEventListener("input", lastNameValidation)
+function lastNameValidation(){
+    if (lastName.value.length >= 2) {
+        cleanError(lastName)
+        return true
+    } else {
+        showError(lastName)
+        return false
+    }
+}
+
+formData[2].addEventListener("input", emailValidation)
+function emailValidation(){
     let emailRegExp = new RegExp("[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+")
-    if (!emailRegExp.test(email)){
-        throw new Error("Adresse e-mail invalide")
+
+    if (emailRegExp.test(email.value)){
+        cleanError(email)
+        return true
+    } else {
+        showError(email)
+        return false
     }
 }
 
-function birthdateValidation(birthdate){
-    if (birthdate === "") {
-        throw new Error("Date de naissance invalide")
-    }
-}
-function tournamentQuantityValidation(tournamentQuantity){
-    
-    if (isNaN(tournamentQuantity) || tournamentQuantity < 0 || tournamentQuantity > 99){
-        throw new Error ("Quantité invalide")
-    }
-}
-
-function termOfUseValidation(termOfUse){
-
-    if (termOfUse === false){
-        throw new Error ("Veuillez accepter les conditions d'utilisation")
+formData[3].addEventListener("input", birthdateValidation)
+function birthdateValidation(){
+    if (birthdate.value != "") {
+        cleanError(birthdate)
+        return true
+    } else {
+        showError(birthdate)
+        return false
     }
 }
 
-function showErrorMessage(message){
-
-    //let errorMessageSpan = document.getElementById("messageError")
-    let formData = document.querySelector(".formData")
-
-    if (!formData.hasAttribute("data-error-visible")){
-
-        formData.setAttribute("data-error-visible", "true")       
-        formData.setAttribute("data-error", message) 
-        console.log(formData)
-
-
-        
-        //errorMessageSpan = document.createElement("span")
-        //errorMessageSpan.id="messageError"
-        
-        //formData.append(errorMessageSpan)
+formData[4].addEventListener("input", tournamentQuantityValidation)
+function tournamentQuantityValidation(){
+    if (tournamentQuantity.value != "" && tournamentQuantity.value >= 0 && tournamentQuantity.value < 99){
+        cleanError(tournamentQuantity)
+        return true
+    } else {
+        showError(tournamentQuantity)
+        return false
     }
-    //errorMessageSpan.innerText = message
 }
-/*
-function showErrorMessage(message){
 
-    let formData = document.querySelectorAll(".formData")
+formData[5].addEventListener("input", cityChoice)
+function cityChoice() {
+    let checkedCity = document.querySelector("input[name='location']:checked")
+    if (checkedCity){
+        cleanError(citySelection)
+        return true
+    } else {
+        showError(citySelection)
+        return false
+    }
+}
 
-    for (let i = 0; i < formData.length; i++) {
-        if (!formData.hasAttribute("data-error-visible")){
+formData[6].addEventListener("input", termOfUseValidation)
+function termOfUseValidation(){
 
-            formData.setAttribute("data-error-visible", "true")       
-            formData.setAttribute("data-error", message) 
-            console.log(formData)
+    if (termOfUse.checked === true){
+        cleanError(termOfUse)
+        return true
+    } else {
+        showError(termOfUse)
+        return false
+    }
+}
+/*********** ↑↑ Listen and check the inputs ↑↑ ***********/
+
+// Get position of the error and displays it
+function showError(element){
+    let parentFormData = element.parentElement
+    let errorMessage = ""
+
+    switch (element.id) {
+        case "first": { errorMessage = "Le prénom doit contenir au moins 2 caractères"
+        break } 
+        case "last": { errorMessage = "Le nom doit contenir au moins 2 caractères"
+        break }
+        case "email" :  { errorMessage = "Merci d'insérer un email valide"
+        break }
+        case "birthdate" :  { errorMessage = "Veuillez sélectionner votre date de naissance"
+        break }
+        case "quantity":  { errorMessage = "Quantité invalide"
+        break }
+        case "location1":  { errorMessage = "Vous devez choisir une option"
+        break }
+        case "checkbox1":  { errorMessage = "Merci d'accepter les conditions d'utilisations"
+        break 
+        }
+        default : { console.log("Erreur dans l'instruction switch")
         }
     }
-    
+    parentFormData.setAttribute("data-error-visible", "true")
+    parentFormData.setAttribute("data-error", errorMessage) 
+}
 
-}*/
+// Clean error when there is no more
+function cleanError(e){
+    let parentFormData = e.parentElement
+
+    parentFormData.setAttribute("data-error-visible", "false")
+    parentFormData.setAttribute("data-error", "") 
+}
+
+// Reset form at the end
+function resetForm(){
+    let thanksModal = document.querySelector(".thanksModal")
+
+    closeBtn.classList.remove("end")
+    thanksModal.remove()
+    form.reset()
+    form.style.display = "block"
+}
